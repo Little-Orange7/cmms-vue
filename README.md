@@ -5,32 +5,30 @@
 # 技术
 > vue-cli、vue-router、vuex、axios、elementUI。
 
-# my-vue
-
-> lean vue
+# 部署和启动
 
 ## Build Setup
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 依赖安装成功后，启动
 npm run dev
 
-# build for production with minification
+# 部署的时候打包命令
 npm run build
 
-# build for production and view the bundle analyzer report
+# build时生成分析报告进行性能优化
 npm run build --report
 
-# run unit tests
+# 单元测试
 npm run unit
 
-# run e2e tests
+# e2e测试
 npm run e2e
 
-# run all tests
+# 运行所有的测试
 npm test
 ```
 
