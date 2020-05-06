@@ -3,12 +3,7 @@
 # cmms-vue简介
 通用后台管理系统(cmms)，采用灵活的菜单配置，及角色权限配置和用户管理，管理员可以自由的分类菜单，自由的配置菜单的结构和层级关系，为不同的角色定制不同的菜单权限，使得拥有相应角色的用户登录后，所见的菜单是不同的，从而实现用户的权限管理。cmms-vue为通用后台管理系统对应的前端，用vue编写；此项目作为一个后台管理系统，只编写了系统管理相关的业务逻辑，不同公司可根据自己的具体业务，灵活添加相应的业务模块进行二次开发，与仓库中的cmms服务端搭配使用。
 # 项目部分截图
-菜单管理
-![image](https://github.com/Little-Orange7/resource/blob/master/cmms/cmms-vue1.png)
-角色管理
-![image](https://github.com/Little-Orange7/resource/blob/master/cmms/cmms-vue2.png)
-用户管理
-![image](https://github.com/Little-Orange7/resource/blob/master/cmms/cmms-vue3.png)
+[查看这篇博客](https://www.cnblogs.com/littleorange7/p/12837438.html)
 # 技术
 > vue-cli、vue-router、vuex、axios、elementUI。
 
