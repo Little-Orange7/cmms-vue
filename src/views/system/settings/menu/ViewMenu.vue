@@ -13,12 +13,16 @@
         <el-form-item label="图标" prop="iconCls">
           <el-input v-model="form.iconCls" :disabled="true" placeholder="菜单对应的图标" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="页面关闭之前是否缓存">
-          <el-switch v-model="form.keepAlive" :disabled="true"></el-switch>
-        </el-form-item>
-        <el-form-item label="页面查看是否需要登录">
-          <el-switch v-model="form.requireAuth" :disabled="true"></el-switch>
-        </el-form-item>
+        <el-col :span="12">
+          <el-form-item label="页面是否缓存">
+            <el-switch v-model="form.keepAlive" :disabled="true"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="页面是否登录">
+            <el-switch v-model="form.requireAuth" :disabled="true"></el-switch>
+          </el-form-item>
+        </el-col>
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
