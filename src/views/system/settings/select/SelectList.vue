@@ -48,7 +48,8 @@
         v-if="editDialogVisible"
         width="40%">
         <div>
-          <edit-select :select="currentRow" @closeDialog="editDialogVisible=false" @refreshTableData="refreshTableData()"></edit-select>
+          <edit-select :select="currentRow" @closeDialog="editDialogVisible=false"
+                       @refreshTableData="refreshTableData()"></edit-select>
         </div>
       </el-dialog>
       <el-dialog
@@ -88,163 +89,167 @@
 </template>
 
 <script>
-import AddSelect from './AddSelect'
-import EditSelect from './EditSelect'
-import ViewSelect from './ViewSelect'
-import OptionList from './option/OptionList'
-export default {
-  name: 'SelectList',
-  components: {
-    AddSelect,
-    EditSelect,
-    ViewSelect,
-    OptionList
-  },
-  data () {
-    return {
-      searchForm: {selectCode: '', selectName: '', selectRemark: ''},
-      tableData: [],
-      addDialogVisible: false,
-      editDialogVisible: false,
-      viewDialogVisible: false,
-      configDialogVisible: false,
-      loading: false,
-      currentRow: {},
-      currentPage: 1,
-      pageSize: 5,
-      totalSize: 0,
-      // tree严格的遵循父子不互相关联
-      checkStrictly: true,
-      expandAll: true,
-      selectedMenus: [],
-      selectedKeys: [],
-      allMenus: [],
-      addMenu: {rid: '', mid: ''}
-    }
-  },
-  mounted () {
-    this.initTableListData()
-  },
-  methods: {
-    // 过滤node是否显示
-    filterNode (value, data) {
-      if (!value) return true
-      return data.name.indexOf(value) !== -1
+  import AddSelect from './AddSelect'
+  import EditSelect from './EditSelect'
+  import ViewSelect from './ViewSelect'
+  import OptionList from './option/OptionList'
+
+  export default {
+    name: 'SelectList',
+    components: {
+      AddSelect,
+      EditSelect,
+      ViewSelect,
+      OptionList
     },
-    // 触发搜索按钮
-    handleSearch () {
+    data() {
+      return {
+        searchForm: {selectCode: '', selectName: '', selectRemark: ''},
+        tableData: [],
+        addDialogVisible: false,
+        editDialogVisible: false,
+        viewDialogVisible: false,
+        configDialogVisible: false,
+        loading: false,
+        currentRow: {},
+        currentPage: 1,
+        pageSize: 5,
+        totalSize: 0,
+        // tree严格的遵循父子不互相关联
+        checkStrictly: true,
+        expandAll: true,
+        selectedMenus: [],
+        selectedKeys: [],
+        allMenus: [],
+        addMenu: {rid: '', mid: ''}
+      }
+    },
+    mounted() {
       this.initTableListData()
     },
-    // 修改
-    editData (row) {
-      this.currentRow = {...row}
-      if (this.currentRow.id) {
-        this.editDialogVisible = true
-      } else {
-        this.$message.error('请选择一行')
-      }
-    },
-    // 查看
-    viewData (row) {
-      this.currentRow = row
-      if (this.currentRow.id) {
-        this.viewDialogVisible = true
-      } else {
-        this.$message.error('请选择一行')
-      }
-    },
-    deleteData (row) {
-      this.currentRow = row
-      if (this.currentRow.id) {
-        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          let id = this.currentRow.id
-          this.httpPost('/system/select/deleteSelectById', {id}).then(resp => {
-            if (resp.code === 200) {
-              this.refreshTableData()
-            }
+    methods: {
+      // 过滤node是否显示
+      filterNode(value, data) {
+        if (!value) return true
+        return data.name.indexOf(value) !== -1
+      },
+      // 触发搜索按钮
+      handleSearch() {
+        this.initTableListData()
+      },
+      // 修改
+      editData(row) {
+        this.currentRow = {...row}
+        if (this.currentRow.id) {
+          this.editDialogVisible = true
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 查看
+      viewData(row) {
+        this.currentRow = row
+        if (this.currentRow.id) {
+          this.viewDialogVisible = true
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      deleteData(row) {
+        this.currentRow = row
+        if (this.currentRow.id) {
+          this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let id = this.currentRow.id
+            this.httpPost('/system/select/deleteSelectById', {id}).then(resp => {
+              if (resp.code === 200) {
+                this.refreshTableData()
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
           })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 配置菜单
+      configOptions(row) {
+        this.currentRow = row
+        console.log('this.currentRow.selectCode:' + this.currentRow.selectCode)
+        if (!this.currentRow.selectCode) {
+          this.$message.error('请选择一行')
+          return
+        }
+        this.configDialogVisible = true
+      },
+      // 查询所有的菜单
+      initAllMenus() {
+        this.httpGet('/system/menu/getAllMenuTree').then(resp => {
+          if (resp.code === 200) {
+            this.allMenus = resp.obj
+          }
         })
-      } else {
-        this.$message.error('请选择一行')
+      },
+      // 根据rid查询该role已拥有的菜单id
+      initSelectedMenus(rid) {
+        console.log('rid:' + rid)
+        this.httpPost('/system/roleMenu/selectMidsByRid', {rid}).then(resp => {
+          if (resp.code === 200) {
+            this.selectedMenus = resp.obj
+          }
+        })
+      },
+      // 初始化列表数据
+      initTableListData() {
+        this.loading = true
+        this.httpPost('/system/select/getSelectListByCondition', this.searchForm).then(resp => {
+          if (resp.code === 200) {
+            this.tableData = resp.obj
+            this.totalSize = this.tableData.length
+          }
+        })
+        this.loading = false
+      },
+      // 数据变动之后，重新请求查询数据，刷新表数据
+      refreshTableData() {
+        this.initTableListData()
+      },
+      handleRowSizeChange(val) {
+        this.pageSize = val
+        console.log(`每页 ${val} 条`)
+      },
+      handleCurrentPageChange(val) {
+        this.currentPage = val
+        console.log(`当前页: ${val}`)
+      },
+      handleCurrentChange(val) {
+        console.log('val:' + val)
       }
-    },
-    // 配置菜单
-    configOptions (row) {
-      this.currentRow = row
-      console.log('this.currentRow.selectCode:' + this.currentRow.selectCode)
-      if (!this.currentRow.selectCode) {
-        this.$message.error('请选择一行')
-        return
-      }
-      this.configDialogVisible = true
-    },
-    // 查询所有的菜单
-    initAllMenus () {
-      this.httpGet('/system/menu/getAllMenuTree').then(resp => {
-        if (resp.code === 200) {
-          this.allMenus = resp.obj
-        }
-      })
-    },
-    // 根据rid查询该role已拥有的菜单id
-    initSelectedMenus (rid) {
-      console.log('rid:' + rid)
-      this.httpPost('/system/roleMenu/selectMidsByRid', {rid}).then(resp => {
-        if (resp.code === 200) {
-          this.selectedMenus = resp.obj
-        }
-      })
-    },
-    // 初始化列表数据
-    initTableListData () {
-      this.loading = true
-      this.httpPost('/system/select/getSelectListByCondition', this.searchForm).then(resp => {
-        if (resp.code === 200) {
-          this.tableData = resp.obj
-          this.totalSize = this.tableData.length
-        }
-      })
-      this.loading = false
-    },
-    // 数据变动之后，重新请求查询数据，刷新表数据
-    refreshTableData () {
-      this.initTableListData()
-    },
-    handleRowSizeChange (val) {
-      this.pageSize = val
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentPageChange (val) {
-      this.currentPage = val
-      console.log(`当前页: ${val}`)
-    },
-    handleCurrentChange (val) {
-      console.log('val:' + val)
     }
   }
-}
 </script>
 
 <style scoped>
   .handle-box {
     margin-bottom: 20px;
   }
+
   .handle-select {
     width: 120px;
   }
+
   .handle-input {
     width: 200px;
     display: inline-block;
   }
+
   .mr10 {
     margin-right: 5px;
   }

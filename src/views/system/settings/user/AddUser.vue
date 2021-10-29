@@ -42,86 +42,86 @@
 </template>
 
 <script>
-export default {
-  name: 'AddUser',
-  data () {
-    return {
-      form: {},
-      options: [],
-      defaultProps: {
-        checkStrictly: true,
-        emitPath: false,
-        value: 'orgCode',
-        label: 'orgName'
+  export default {
+    name: 'AddUser',
+    data() {
+      return {
+        form: {},
+        options: [],
+        defaultProps: {
+          checkStrictly: true,
+          emitPath: false,
+          value: 'orgCode',
+          label: 'orgName'
+        },
+        rules: {
+          loginName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          loginPwd: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userMail: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userStatus: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          orgCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    mounted() {
+      this.initSearchTree()
+    },
+    methods: {
+      initSearchTree() {
+        this.httpGet('/system/org/getAllOrgTree').then(resp => {
+          if (resp.code === 200) {
+            this.options = resp.obj
+          }
+        })
       },
-      rules: {
-        loginName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        loginPwd: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userMail: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userStatus: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        orgCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+      selectTreeChange() {
+        console.log('selectTreeChange=======>this.form.orgCode:' + this.form.orgCode)
+      },
+      onSubmit(addForm) {
+        console.log('onSubmit')
+        this.$refs[addForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/user/addUser', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.$emit('closeDialog')
+                  this.$emit('refreshTableData')
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  mounted () {
-    this.initSearchTree()
-  },
-  methods: {
-    initSearchTree () {
-      this.httpGet('/system/org/getAllOrgTree').then(resp => {
-        if (resp.code === 200) {
-          this.options = resp.obj
-        }
-      })
-    },
-    selectTreeChange () {
-      console.log('selectTreeChange=======>this.form.orgCode:' + this.form.orgCode)
-    },
-    onSubmit (addForm) {
-      console.log('onSubmit')
-      this.$refs[addForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/user/addUser', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.$emit('closeDialog')
-                this.$emit('refreshTableData')
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

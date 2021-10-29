@@ -15,25 +15,25 @@
 </template>
 
 <script>
-export default {
-  name: 'ViewRole',
-  props: {
-    role: {}
-  },
-  data () {
-    return {
-      form: this.role
-    }
-  },
-  mounted () {
-  },
-  methods: {
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
+  export default {
+    name: 'ViewRole',
+    props: {
+      role: {}
+    },
+    data() {
+      return {
+        form: this.role
+      }
+    },
+    mounted() {
+    },
+    methods: {
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
+      }
     }
   }
-}
 </script>
 
 <style scoped>

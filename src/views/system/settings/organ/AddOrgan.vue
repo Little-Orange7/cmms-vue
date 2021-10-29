@@ -34,57 +34,57 @@
 </template>
 
 <script>
-export default {
-  name: 'AddOrgan',
-  props: {
-    addData: {}
-  },
-  data () {
-    return {
-      form: {},
-      rules: {
-        orgName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        orgCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+  export default {
+    name: 'AddOrgan',
+    props: {
+      addData: {}
+    },
+    data() {
+      return {
+        form: {},
+        rules: {
+          orgName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          orgCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    methods: {
+      onSubmit(addForm) {
+        this.$refs[addForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/org/addOrg', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.$emit('closeDialog')
+                  this.$emit('refreshTableData')
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  methods: {
-    onSubmit (addForm) {
-      this.$refs[addForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/org/addOrg', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.$emit('closeDialog')
-                this.$emit('refreshTableData')
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

@@ -45,107 +45,109 @@
 
 <script>
 
-export default {
-  name: 'OrganUser',
-  data () {
-    return {
-      userStatusList: [],
-      searchForm: {id: '', name: '', code: ''},
-      oids: '',
-      tableData: [],
-      addDialogVisible: false,
-      editDialogVisible: false,
-      viewDialogVisible: false,
-      configDialogVisible: false,
-      loading: false,
-      currentRow: {},
-      currentPage: 1,
-      pageSize: 5,
-      totalSize: 0,
-      options: [],
-      defaultProps: {
-        multiple: true,
-        checkStrictly: true,
-        emitPath: false,
-        value: 'orgCode',
-        label: 'orgName'
-      },
-      expandAll: true,
-      selectedKeys: []
-    }
-  },
-  mounted () {
-    this.initTableListData()
-    this.initSearchTree()
-    this.initSelectOptions()
-  },
-  methods: {
-    formatStatus (row, column) {
-      let prop = column.property
-      console.log('prop:' + prop + ',this.userStatusList:' + this.userStatusList)
-      let list = this.userStatusList.filter(status => status.optionValue === row.userStatus)
-      if (list !== null && list.length > 0) {
-        return list[0].optionLabel
-      } else {
-        return ''
+  export default {
+    name: 'OrganUser',
+    data() {
+      return {
+        userStatusList: [],
+        searchForm: {id: '', name: '', code: ''},
+        oids: '',
+        tableData: [],
+        addDialogVisible: false,
+        editDialogVisible: false,
+        viewDialogVisible: false,
+        configDialogVisible: false,
+        loading: false,
+        currentRow: {},
+        currentPage: 1,
+        pageSize: 5,
+        totalSize: 0,
+        options: [],
+        defaultProps: {
+          multiple: true,
+          checkStrictly: true,
+          emitPath: false,
+          value: 'orgCode',
+          label: 'orgName'
+        },
+        expandAll: true,
+        selectedKeys: []
       }
     },
-    initSelectOptions () {
-      let selectCode = 'SYS_USER_STATUS'
-      this.httpPost('/system/option/getOptionsBySelectCode', {selectCode}).then(resp => {
-        if (resp.code === 200) {
-          this.userStatusList = resp.obj
-        }
-      })
-    },
-    initSearchTree () {
-      this.httpGet('/system/org/getAllOrgTree').then(resp => {
-        if (resp.code === 200) {
-          this.options = resp.obj
-        }
-      })
-    },
-    initTableListData () {
-      let oids = this.selectedKeys.toString()
-      this.httpPost('/system/orgUser/searchUserListByOids', {oids}).then(resp => {
-        if (resp.code === 200) {
-          this.tableData = resp.obj
-        }
-      })
-    },
-    selectTreeChange () {
-      console.log('selectTreeChange=======>selectedKeys:' + this.selectedKeys)
-    },
-    // 触发搜索按钮
-    handleSearch () {
+    mounted() {
       this.initTableListData()
-      console.log('handleSearch')
+      this.initSearchTree()
+      this.initSelectOptions()
     },
-    handleCurrentChange (val) {
-      console.log('val:' + val)
-      this.currentRow = {...val}
-      console.log('this.currentRow.id:' + this.currentRow.id)
-    },
-    handleRowSizeChange (val) {
-      this.pageSize = val
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentPageChange (val) {
-      this.currentPage = val
-      console.log(`当前页: ${val}`)
+    methods: {
+      formatStatus(row, column) {
+        let prop = column.property
+        console.log('prop:' + prop + ',this.userStatusList:' + this.userStatusList)
+        let list = this.userStatusList.filter(status => status.optionValue === row.userStatus)
+        if (list !== null && list.length > 0) {
+          return list[0].optionLabel
+        } else {
+          return ''
+        }
+      },
+      initSelectOptions() {
+        let selectCode = 'SYS_USER_STATUS'
+        this.httpPost('/system/option/getOptionsBySelectCode', {selectCode}).then(resp => {
+          if (resp.code === 200) {
+            this.userStatusList = resp.obj
+          }
+        })
+      },
+      initSearchTree() {
+        this.httpGet('/system/org/getAllOrgTree').then(resp => {
+          if (resp.code === 200) {
+            this.options = resp.obj
+          }
+        })
+      },
+      initTableListData() {
+        let oids = this.selectedKeys.toString()
+        this.httpPost('/system/orgUser/searchUserListByOids', {oids}).then(resp => {
+          if (resp.code === 200) {
+            this.tableData = resp.obj
+          }
+        })
+      },
+      selectTreeChange() {
+        console.log('selectTreeChange=======>selectedKeys:' + this.selectedKeys)
+      },
+      // 触发搜索按钮
+      handleSearch() {
+        this.initTableListData()
+        console.log('handleSearch')
+      },
+      handleCurrentChange(val) {
+        console.log('val:' + val)
+        this.currentRow = {...val}
+        console.log('this.currentRow.id:' + this.currentRow.id)
+      },
+      handleRowSizeChange(val) {
+        this.pageSize = val
+        console.log(`每页 ${val} 条`)
+      },
+      handleCurrentPageChange(val) {
+        this.currentPage = val
+        console.log(`当前页: ${val}`)
+      }
     }
   }
-}
 </script>
 
 <style scoped>
   .handle-box {
     margin-bottom: 20px;
   }
+
   .handle-input {
     width: 200px;
     display: inline-block;
   }
+
   .mr10 {
     margin-right: 5px;
   }

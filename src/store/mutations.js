@@ -5,13 +5,13 @@ import {
 } from './mutation-types.js'
 
 export default {
-  [INIT_ROUTES] (state, data) {
+  [INIT_ROUTES](state, data) {
     state.routes = data
   },
-  [INIT_USER] (state, user) {
+  [INIT_USER](state, user) {
     state.user = user
   },
-  [SET_KEEPALIVE] (state, compNames) {
+  [SET_KEEPALIVE](state, compNames) {
     state.keepAliveComps = compNames
   }
 }

@@ -30,27 +30,27 @@
 </template>
 
 <script>
-export default {
-  name: 'ViewUser',
-  props: {
-    user: {}
-  },
-  data () {
-    return {
-      form: this.user
-    }
-  },
-  mounted () {
-    // 可根据userId请求后台查询角色信息并加载到form
-  },
-  methods: {
-    // 返回
-    onCancel () {
-      console.log('onCancel')
-      this.$emit('closeDialog')
+  export default {
+    name: 'ViewUser',
+    props: {
+      user: {}
+    },
+    data() {
+      return {
+        form: this.user
+      }
+    },
+    mounted() {
+      // 可根据userId请求后台查询角色信息并加载到form
+    },
+    methods: {
+      // 返回
+      onCancel() {
+        console.log('onCancel')
+        this.$emit('closeDialog')
+      }
     }
   }
-}
 </script>
 
 <style scoped>

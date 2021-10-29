@@ -5,7 +5,8 @@
       <el-input v-model="searchForm.userName" placeholder="用户名" class="handle-input mr10"></el-input>
       <el-input v-model="searchForm.mobilePhone" placeholder="手机号码" class="handle-input mr10"></el-input>
       <el-select v-model="searchForm.userStatus" clearable placeholder="用户状态">
-        <el-option v-for="item in userStatusList" :key="item.optionValue" :label="item.optionLabel" :value="item.optionValue"></el-option>
+        <el-option v-for="item in userStatusList" :key="item.optionValue" :label="item.optionLabel"
+                   :value="item.optionValue"></el-option>
       </el-select>
       <el-tooltip class="item" effect="light" content="支持模糊查询" placement="right">
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
@@ -51,7 +52,8 @@
         v-if="editDialogVisible"
         width="40%">
         <div>
-          <edit-user :user="currentRow" @closeDialog="editDialogVisible=false" @refreshTableData="refreshTableData()"></edit-user>
+          <edit-user :user="currentRow" @closeDialog="editDialogVisible=false"
+                     @refreshTableData="refreshTableData()"></edit-user>
         </div>
       </el-dialog>
       <el-dialog
@@ -107,187 +109,188 @@
 </template>
 
 <script>
-import AddUser from './AddUser'
-import EditUser from './EditUser'
-import ViewUser from './ViewUser'
-export default {
-  name: 'UserList',
-  components: {
-    AddUser,
-    EditUser,
-    ViewUser
-  },
-  data () {
-    return {
-      userStatusList: [],
-      searchForm: {loginName: '', userName: '', mobilePhone: '', userStatus: ''},
-      tableData: [],
-      addDialogVisible: false,
-      editDialogVisible: false,
-      viewDialogVisible: false,
-      configDialogVisible: false,
-      loading: false,
-      currentPage: 1,
-      pageSize: 5,
-      totalSize: 0,
-      currentRow: {},
-      defaultProps: {
-        key: 'id',
-        label: 'nameZh'
+  import AddUser from './AddUser'
+  import EditUser from './EditUser'
+  import ViewUser from './ViewUser'
+
+  export default {
+    name: 'UserList',
+    components: {
+      AddUser,
+      EditUser,
+      ViewUser
+    },
+    data() {
+      return {
+        userStatusList: [],
+        searchForm: {loginName: '', userName: '', mobilePhone: '', userStatus: ''},
+        tableData: [],
+        addDialogVisible: false,
+        editDialogVisible: false,
+        viewDialogVisible: false,
+        configDialogVisible: false,
+        loading: false,
+        currentPage: 1,
+        pageSize: 5,
+        totalSize: 0,
+        currentRow: {},
+        defaultProps: {
+          key: 'id',
+          label: 'nameZh'
+        },
+        // 所有的角色
+        allRoles: [],
+        // 已有角色的id
+        haveRoles: [],
+        updateForm: {
+          uid: '',
+          rids: ''
+        }
+      }
+    },
+    mounted() {
+      this.initTableListData()
+      this.initSelectOptions()
+    },
+    methods: {
+      formatStatus(row, column) {
+        let prop = column.property
+        let list = this.userStatusList.filter(status => status.optionValue === row.userStatus)
+        if (list !== null && list.length > 0) {
+          return list[0].optionLabel
+        } else {
+          return ''
+        }
       },
-      // 所有的角色
-      allRoles: [],
-      // 已有角色的id
-      haveRoles: [],
-      updateForm: {
-        uid: '',
-        rids: ''
-      }
-    }
-  },
-  mounted () {
-    this.initTableListData()
-    this.initSelectOptions()
-  },
-  methods: {
-    formatStatus (row, column) {
-      let prop = column.property
-      let list = this.userStatusList.filter(status => status.optionValue === row.userStatus)
-      if (list !== null && list.length > 0) {
-        return list[0].optionLabel
-      } else {
-        return ''
-      }
-    },
-    initSelectOptions () {
-      let selectCode = 'SYS_USER_STATUS'
-      this.httpPost('/system/option/getOptionsBySelectCode', {selectCode}).then(resp => {
-        if (resp.code === 200) {
-          this.userStatusList = resp.obj
-        }
-      })
-    },
-    // 触发搜索按钮
-    handleSearch () {
-      // 根据查询条件 模糊查询
-      this.initTableListData()
-    },
-    // 修改
-    editData (row) {
-      this.currentRow = {...row}
-      if (this.currentRow.id) {
-        this.editDialogVisible = true
-      } else {
-        this.$message.error('请选择一行')
-      }
-    },
-    // 查看
-    viewData (row) {
-      this.currentRow = row
-      if (this.currentRow.id) {
-        this.viewDialogVisible = true
-      } else {
-        this.$message.error('请选择一行')
-      }
-    },
-    // 删除
-    deleteData (row) {
-      this.currentRow = row
-      if (this.currentRow.id) {
-        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          let id = this.currentRow.id
-          this.httpPost('/system/user/deleteUserByUid', {id}).then(resp => {
-            if (resp.code === 200) {
-              this.refreshTableData()
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+      initSelectOptions() {
+        let selectCode = 'SYS_USER_STATUS'
+        this.httpPost('/system/option/getOptionsBySelectCode', {selectCode}).then(resp => {
+          if (resp.code === 200) {
+            this.userStatusList = resp.obj
+          }
         })
-      } else {
-        this.$message.error('请选择一行')
+      },
+      // 触发搜索按钮
+      handleSearch() {
+        // 根据查询条件 模糊查询
+        this.initTableListData()
+      },
+      // 修改
+      editData(row) {
+        this.currentRow = {...row}
+        if (this.currentRow.id) {
+          this.editDialogVisible = true
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 查看
+      viewData(row) {
+        this.currentRow = row
+        if (this.currentRow.id) {
+          this.viewDialogVisible = true
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 删除
+      deleteData(row) {
+        this.currentRow = row
+        if (this.currentRow.id) {
+          this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let id = this.currentRow.id
+            this.httpPost('/system/user/deleteUserByUid', {id}).then(resp => {
+              if (resp.code === 200) {
+                this.refreshTableData()
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 配置角色
+      configRoles(row) {
+        this.currentRow = row
+        if (this.currentRow.id) {
+          // 1.查询所有的角色并加载
+          this.initAllRoles()
+          // 2.查询当前用户已经拥有的角色
+          this.initSelectedRoles(this.currentRow.id)
+          this.configDialogVisible = true
+        } else {
+          this.$message.error('请选择一行')
+        }
+      },
+      // 查询所有的角色
+      initAllRoles() {
+        this.httpPost('/system/role/searchRoleListByCondition', this.searchForm).then(resp => {
+          if (resp.code === 200) {
+            this.allRoles = resp.obj
+          }
+        })
+      },
+      // 根据用户id查询该用户拥有的角色
+      initSelectedRoles(id) {
+        this.httpPost('/system/userRole/selectRidsByUid', {id}).then(resp => {
+          if (resp.code === 200) {
+            this.haveRoles = resp.obj
+          }
+        })
+      },
+      // 角色左右移动时，触发该方法
+      moveChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys)
+      },
+      // 选择一行数据
+      handleCurrentChange(val) {
+        // this.currentRow = {...val}
+        // console.log('this.currentRow.id:' + this.currentRow.id)
+      },
+      // 更新用户的角色列表
+      doUpdate() {
+        // 添加已选择的角色id
+        this.updateForm.uid = this.currentRow.id
+        this.updateForm.rids = this.haveRoles.toString()
+        this.httpPost('/system/userRole/modifyRidsByUid', this.updateForm).then(resp => {
+          if (resp.code === 200) {
+            this.configDialogVisible = false
+          }
+        })
+      },
+      // 初始化用户列表数据
+      initTableListData() {
+        this.loading = true
+        this.httpPost('/system/user/searchUserListByCondition', this.searchForm).then(resp => {
+          if (resp.code === 200) {
+            this.tableData = resp.obj
+            this.totalSize = this.tableData.length
+          }
+        })
+        this.loading = false
+      },
+      refreshTableData() {
+        this.initTableListData()
+      },
+      handleRowSizeChange(val) {
+        this.pageSize = val
+        console.log(`每页 ${val} 条`)
+      },
+      handleCurrentPageChange(val) {
+        this.currentPage = val
+        console.log(`当前页: ${val}`)
       }
-    },
-    // 配置角色
-    configRoles (row) {
-      this.currentRow = row
-      if (this.currentRow.id) {
-        // 1.查询所有的角色并加载
-        this.initAllRoles()
-        // 2.查询当前用户已经拥有的角色
-        this.initSelectedRoles(this.currentRow.id)
-        this.configDialogVisible = true
-      } else {
-        this.$message.error('请选择一行')
-      }
-    },
-    // 查询所有的角色
-    initAllRoles () {
-      this.httpPost('/system/role/searchRoleListByCondition', this.searchForm).then(resp => {
-        if (resp.code === 200) {
-          this.allRoles = resp.obj
-        }
-      })
-    },
-    // 根据用户id查询该用户拥有的角色
-    initSelectedRoles (id) {
-      this.httpPost('/system/userRole/selectRidsByUid', {id}).then(resp => {
-        if (resp.code === 200) {
-          this.haveRoles = resp.obj
-        }
-      })
-    },
-    // 角色左右移动时，触发该方法
-    moveChange (value, direction, movedKeys) {
-      console.log(value, direction, movedKeys)
-    },
-    // 选择一行数据
-    handleCurrentChange (val) {
-      // this.currentRow = {...val}
-      // console.log('this.currentRow.id:' + this.currentRow.id)
-    },
-    // 更新用户的角色列表
-    doUpdate () {
-      // 添加已选择的角色id
-      this.updateForm.uid = this.currentRow.id
-      this.updateForm.rids = this.haveRoles.toString()
-      this.httpPost('/system/userRole/modifyRidsByUid', this.updateForm).then(resp => {
-        if (resp.code === 200) {
-          this.configDialogVisible = false
-        }
-      })
-    },
-    // 初始化用户列表数据
-    initTableListData () {
-      this.loading = true
-      this.httpPost('/system/user/searchUserListByCondition', this.searchForm).then(resp => {
-        if (resp.code === 200) {
-          this.tableData = resp.obj
-          this.totalSize = this.tableData.length
-        }
-      })
-      this.loading = false
-    },
-    refreshTableData () {
-      this.initTableListData()
-    },
-    handleRowSizeChange (val) {
-      this.pageSize = val
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentPageChange (val) {
-      this.currentPage = val
-      console.log(`当前页: ${val}`)
     }
   }
-}
 </script>
 
 <style scoped>
@@ -295,10 +298,12 @@ export default {
     margin-left: 20px;
     padding: 6px 5px;
   }
+
   .handle-input {
     width: 200px;
     display: inline-block;
   }
+
   .mr10 {
     margin-right: 5px;
   }

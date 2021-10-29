@@ -22,61 +22,61 @@
 </template>
 
 <script>
-export default {
-  name: 'EditOption',
-  props: {
-    option: {}
-  },
-  data () {
-    return {
-      form: this.option,
-      rules: {
-        selectCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        optionLabel: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+  export default {
+    name: 'EditOption',
+    props: {
+      option: {}
+    },
+    data() {
+      return {
+        form: this.option,
+        rules: {
+          selectCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          optionLabel: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    mounted() {
+      // 可根据roleId请求后台查询角色信息并加载到form
+    },
+    methods: {
+      // 提交
+      onSubmit(editForm) {
+        this.$refs[editForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/option/editOption', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.$emit('closeDialog')
+                  this.$emit('refreshTableData')
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  mounted () {
-    // 可根据roleId请求后台查询角色信息并加载到form
-  },
-  methods: {
-    // 提交
-    onSubmit (editForm) {
-      this.$refs[editForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/option/editOption', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.$emit('closeDialog')
-                this.$emit('refreshTableData')
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

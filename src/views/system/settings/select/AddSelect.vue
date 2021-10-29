@@ -19,56 +19,55 @@
 </template>
 
 <script>
-export default {
-  name: 'AddSelect',
-  data () {
-    return {
-      form: {
+  export default {
+    name: 'AddSelect',
+    data() {
+      return {
+        form: {},
+        rules: {
+          selectCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          selectName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    methods: {
+      // 提交
+      onSubmit(addForm) {
+        this.$refs[addForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/select/addSelect', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.$emit('closeDialog')
+                  this.$emit('refreshTableData')
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       },
-      rules: {
-        selectCode: [
-          {required: true, message: '必输项不能为空', trigger: 'blur'}
-        ],
-        selectName: [
-          {required: true, message: '必输项不能为空', trigger: 'blur'}
-        ]
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  methods: {
-    // 提交
-    onSubmit (addForm) {
-      this.$refs[addForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/select/addSelect', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.$emit('closeDialog')
-                this.$emit('refreshTableData')
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

@@ -24,24 +24,25 @@
 </template>
 
 <script>
-import TopHeader from './TopHeader'
-import SideMenu from './SideMenu'
-import NavTabs from './NavTabs'
-export default {
-  name: 'Layout',
-  components: {
-    TopHeader,
-    SideMenu,
-    NavTabs
-  },
-  data () {
-    return {
-      editableTabsValue: '2',
-      editableTabs: [],
-      tabIndex: 2
+  import TopHeader from './TopHeader'
+  import SideMenu from './SideMenu'
+  import NavTabs from './NavTabs'
+
+  export default {
+    name: 'Layout',
+    components: {
+      TopHeader,
+      SideMenu,
+      NavTabs
+    },
+    data() {
+      return {
+        editableTabsValue: '2',
+        editableTabs: [],
+        tabIndex: 2
+      }
     }
   }
-}
 </script>
 
 <style scoped>
@@ -49,15 +50,19 @@ export default {
     border: 1px solid #eee;
     padding: 20px;
   }
+
   .layout {
   }
+
   .content-box {
     height: 670px;
     border: 1px solid #eeeeee;
   }
+
   .homeRouterView {
     margin-top: 1px;
   }
+
   .homeHeader {
     background-color: #409eff;
     display: flex;
@@ -66,6 +71,7 @@ export default {
     padding: 0px 15px;
     box-sizing: border-box;
   }
+
   .homeHeader .title {
     font-size: 30px;
     font-family: 华文行楷;

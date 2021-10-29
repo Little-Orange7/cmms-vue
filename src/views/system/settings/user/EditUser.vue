@@ -39,84 +39,84 @@
 </template>
 
 <script>
-export default {
-  name: 'EditUser',
-  props: {
-    user: {}
-  },
-  data () {
-    return {
-      form: this.user,
-      options: [],
-      defaultProps: {
-        checkStrictly: true,
-        emitPath: false,
-        value: 'orgCode',
-        label: 'orgName'
+  export default {
+    name: 'EditUser',
+    props: {
+      user: {}
+    },
+    data() {
+      return {
+        form: this.user,
+        options: [],
+        defaultProps: {
+          checkStrictly: true,
+          emitPath: false,
+          value: 'orgCode',
+          label: 'orgName'
+        },
+        rules: {
+          loginName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userMail: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          orgCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    mounted() {
+      this.initSearchTree()
+    },
+    methods: {
+      initSearchTree() {
+        this.httpGet('/system/org/getAllOrgTree').then(resp => {
+          if (resp.code === 200) {
+            this.options = resp.obj
+          }
+        })
       },
-      rules: {
-        loginName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userMail: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        orgCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+      selectTreeChange() {
+        console.log('selectTreeChange=======>this.form.orgCode:' + this.form.orgCode)
+      },
+      // 提交
+      onSubmit(editForm) {
+        this.$refs[editForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/user/editUserInfoByUid', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.$emit('closeDialog')
+                  this.$emit('refreshTableData')
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  mounted () {
-    this.initSearchTree()
-  },
-  methods: {
-    initSearchTree () {
-      this.httpGet('/system/org/getAllOrgTree').then(resp => {
-        if (resp.code === 200) {
-          this.options = resp.obj
-        }
-      })
-    },
-    selectTreeChange () {
-      console.log('selectTreeChange=======>this.form.orgCode:' + this.form.orgCode)
-    },
-    // 提交
-    onSubmit (editForm) {
-      this.$refs[editForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/user/editUserInfoByUid', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.$emit('closeDialog')
-                this.$emit('refreshTableData')
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

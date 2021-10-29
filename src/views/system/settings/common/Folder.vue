@@ -6,18 +6,17 @@
 </template>
 
 <script>
-export default {
-  name: 'Folder',
-  data () {
-    return {
-    }
-  },
-  computed: {
-    keepAlive () {
-      return this.$store.state.keepAliveComps
+  export default {
+    name: 'Folder',
+    data() {
+      return {}
+    },
+    computed: {
+      keepAlive() {
+        return this.$store.state.keepAliveComps
+      }
     }
   }
-}
 </script>
 
 <style scoped>

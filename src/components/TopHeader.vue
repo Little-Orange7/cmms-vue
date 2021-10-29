@@ -73,138 +73,138 @@
 
 <script>
 
-export default {
-  name: 'TopHeader',
-  data () {
-    return {
-      userInforDialogVisible: false,
-      pwdDialogVisible: false,
-      pwdForm: {},
-      rules: {
-        loginName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        loginPwd: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userMail: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        userStatus: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        orgCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+  export default {
+    name: 'TopHeader',
+    data() {
+      return {
+        userInforDialogVisible: false,
+        pwdDialogVisible: false,
+        pwdForm: {},
+        rules: {
+          loginName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          loginPwd: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userMail: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          userStatus: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          orgCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        },
+        pwdRules: {
+          oldPwd: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          newPwd: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          reNewPwd: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      }
+    },
+    methods: {
+      // 退出登录
+      logoutCommand(command) {
+        console.log('command:' + command)
+        if (command === 'logout') {
+          this.$confirm('此操作将注销登录, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.httpPost('/system/common/doLogout')
+            window.sessionStorage.removeItem('user')
+            this.$store.commit('INIT_ROUTES', [])
+            this.$router.replace('/Login')
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            })
+          })
+        } else if (command === 'userInfo') {
+          this.userInforDialogVisible = true
+        } else if (command === 'modifyPwd') {
+          this.pwdDialogVisible = true
+        }
       },
-      pwdRules: {
-        oldPwd: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        newPwd: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        reNewPwd: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
-      }
-    }
-  },
-  computed: {
-    user () {
-      return this.$store.state.user
-    }
-  },
-  methods: {
-    // 退出登录
-    logoutCommand (command) {
-      console.log('command:' + command)
-      if (command === 'logout') {
-        this.$confirm('此操作将注销登录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.httpPost('/system/common/doLogout')
-          window.sessionStorage.removeItem('user')
-          this.$store.commit('INIT_ROUTES', [])
-          this.$router.replace('/Login')
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          })
+      userInfoOnCancel() {
+        this.userInforDialogVisible = false
+      },
+      // 修改用户信息
+      userInfoOnSubmit(userForm) {
+        this.$refs[userForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.httpPost('/system/user/addUser', this.form).then(resp => {
+                if (resp.code === 200) {
+                  this.userInforDialogVisible = false
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
         })
-      } else if (command === 'userInfo') {
-        this.userInforDialogVisible = true
-      } else if (command === 'modifyPwd') {
-        this.pwdDialogVisible = true
+      },
+      pwdOnCancel() {
+        this.pwdDialogVisible = false
+      },
+      // 修改密码
+      pwdOnSubmit(pwdForm) {
+        this.$refs[pwdForm].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.pwdForm.loginName = this.user.loginName
+              this.httpPost('/system/common/modifyPwd', this.pwdForm).then(resp => {
+                if (resp.code === 200) {
+                  this.pwdDialogVisible = false
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       }
-    },
-    userInfoOnCancel () {
-      this.userInforDialogVisible = false
-    },
-    // 修改用户信息
-    userInfoOnSubmit (userForm) {
-      this.$refs[userForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.httpPost('/system/user/addUser', this.form).then(resp => {
-              if (resp.code === 200) {
-                this.userInforDialogVisible = false
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    pwdOnCancel () {
-      this.pwdDialogVisible = false
-    },
-    // 修改密码
-    pwdOnSubmit (pwdForm) {
-      this.$refs[pwdForm].validate((valid) => {
-        if (valid) {
-          this.$confirm('确定继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.pwdForm.loginName = this.user.loginName
-            this.httpPost('/system/common/modifyPwd', this.pwdForm).then(resp => {
-              if (resp.code === 200) {
-                this.pwdDialogVisible = false
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     }
   }
-}
 </script>
 
 <style scoped>

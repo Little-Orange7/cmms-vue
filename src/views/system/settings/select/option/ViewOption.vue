@@ -33,25 +33,25 @@
 </template>
 
 <script>
-export default {
-  name: 'ViewOption',
-  props: {
-    select: {}
-  },
-  data () {
-    return {
-      form: this.select
-    }
-  },
-  mounted () {
-  },
-  methods: {
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
+  export default {
+    name: 'ViewOption',
+    props: {
+      select: {}
+    },
+    data() {
+      return {
+        form: this.select
+      }
+    },
+    mounted() {
+    },
+    methods: {
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
+      }
     }
   }
-}
 </script>
 
 <style scoped>

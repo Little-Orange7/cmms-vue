@@ -51,51 +51,50 @@
 </template>
 
 <script>
-export default {
-  name: 'Dashboard',
-  data () {
-    return {
-      value: new Date(),
-      todoData: [{
-        date: '2016-05-03',
-        name: '王大锤',
-        task: '请假申请'
-      }, {
-        date: '2016-05-02',
-        name: '张大牙',
-        task: '销假申请'
-      }],
-      doneData: [{
-        date: '2016-05-03',
-        name: '张一三',
-        task: '报销申请'
-      }, {
-        date: '2016-05-02',
-        name: '李二四',
-        task: '出差车票报销'
-      }, {
-        date: '2016-05-04',
-        name: '王三五',
-        task: '报销申请'
-      }, {
-        date: '2016-05-01',
-        name: '赵五六',
-        task: '报销申请'
-      }, {
-        date: '2016-05-08',
-        name: '钱六七',
-        task: '报销申请'
-      }]
-    }
-  },
-  computed: {
-  },
-  methods: {
-    handleClick (row) {
-      console.log(row)
+  export default {
+    name: 'Dashboard',
+    data() {
+      return {
+        value: new Date(),
+        todoData: [{
+          date: '2016-05-03',
+          name: '王大锤',
+          task: '请假申请'
+        }, {
+          date: '2016-05-02',
+          name: '张大牙',
+          task: '销假申请'
+        }],
+        doneData: [{
+          date: '2016-05-03',
+          name: '张一三',
+          task: '报销申请'
+        }, {
+          date: '2016-05-02',
+          name: '李二四',
+          task: '出差车票报销'
+        }, {
+          date: '2016-05-04',
+          name: '王三五',
+          task: '报销申请'
+        }, {
+          date: '2016-05-01',
+          name: '赵五六',
+          task: '报销申请'
+        }, {
+          date: '2016-05-08',
+          name: '钱六七',
+          task: '报销申请'
+        }]
+      }
+    },
+    computed: {},
+    methods: {
+      handleClick(row) {
+        console.log(row)
+      }
     }
   }
-}
 </script>
 
 <style scoped>
@@ -106,6 +105,7 @@ export default {
     color: #2D8CF0;
     font-size: 30px;
   }
+
   .cardColer {
     color: #2D8CF0;
   }

@@ -3,7 +3,7 @@
   <div>
     <template v-for="(item,index) in routes">
       <!-- 一级菜单的情况 start-->
-        <!-- index跟浏览器地址对应，这样菜单才能显示选中状态  -->
+      <!-- index跟浏览器地址对应，这样菜单才能显示选中状态  -->
       <el-menu-item v-if="item.children === null||item.children.length === 0" :index="item.path" :key="index">
         <i v-if="item.meta.iconCls" :class="item.meta.iconCls"></i><!-- 设置icon -->
         <span slot="title">{{item.meta.title}}</span><!-- 菜单名称 -->
@@ -23,15 +23,15 @@
 </template>
 
 <script>
-export default {
-  name: 'SubMenu',
-  props: {
-    routes: {
-      type: Array,
-      default: () => []
+  export default {
+    name: 'SubMenu',
+    props: {
+      routes: {
+        type: Array,
+        default: () => []
+      }
     }
   }
-}
 </script>
 
 <style scoped>

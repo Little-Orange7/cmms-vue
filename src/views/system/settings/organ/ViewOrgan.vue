@@ -33,31 +33,31 @@
 </template>
 
 <script>
-export default {
-  name: 'ViewOrgan',
-  props: {
-    viewData: {}
-  },
-  data () {
-    return {
-      form: this.viewData,
-      rules: {
-        orgName: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ],
-        orgCode: [
-          { required: true, message: '必输项不能为空', trigger: 'blur' }
-        ]
+  export default {
+    name: 'ViewOrgan',
+    props: {
+      viewData: {}
+    },
+    data() {
+      return {
+        form: this.viewData,
+        rules: {
+          orgName: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ],
+          orgCode: [
+            {required: true, message: '必输项不能为空', trigger: 'blur'}
+          ]
+        }
+      }
+    },
+    methods: {
+      // 取消
+      onCancel() {
+        this.$emit('closeDialog')
       }
     }
-  },
-  methods: {
-    // 取消
-    onCancel () {
-      this.$emit('closeDialog')
-    }
   }
-}
 </script>
 
 <style scoped>

@@ -8,38 +8,39 @@
   </div>
 </template>
 <script>
-import SubMenu from './SubMenu'
-export default {
-  name: 'SideMeun',
-  components: {
-    SubMenu
-  },
-  data () {
-    return {
-      activeKey: ''
-    }
-  },
-  computed: {
-    routes () {
-      return this.$store.state.routes
-    }
-  },
-  watch: {
-    // 监听当前路由对象的变化
-    $route (to, from) {
-      this.activeCurrentMenu(to)
-    }
-  },
-  methods: {
-    // 根据当前路由路径来激活当前侧边的菜单
-    activeCurrentMenu (route) {
-      this.activeKey = route.fullPath
+  import SubMenu from './SubMenu'
+
+  export default {
+    name: 'SideMeun',
+    components: {
+      SubMenu
     },
-    pushTabMsg (key, keyPath) {
-      console.log('key, keyPath:' + key, keyPath)
+    data() {
+      return {
+        activeKey: ''
+      }
+    },
+    computed: {
+      routes() {
+        return this.$store.state.routes
+      }
+    },
+    watch: {
+      // 监听当前路由对象的变化
+      $route(to, from) {
+        this.activeCurrentMenu(to)
+      }
+    },
+    methods: {
+      // 根据当前路由路径来激活当前侧边的菜单
+      activeCurrentMenu(route) {
+        this.activeKey = route.fullPath
+      },
+      pushTabMsg(key, keyPath) {
+        console.log('key, keyPath:' + key, keyPath)
+      }
     }
   }
-}
 </script>
 
 <style scoped>
